@@ -23,10 +23,16 @@
     <h2>Ranger image processing mappings</h2>
     <p>One of the nicest things I have come up with is to map basic image analysis operations into ranger shortcuts. 
     For these, imagemagick does the operation and parallel is used to, surprise surprise, parallelize the job. 
-    These have sped up basic image editing tasks quite a lot and provide a super nice feeling of efficiency. Let's take an image rotation example:
+    These have sped up basic image editing tasks quite a lot and provide a super nice feeling of efficiency. 
+    <br>
+    <br>
+    Let's take an image rotation example:
     <code>map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}</code>.
     The first echo is meant to be a comment what this operation is about when selecting it within ranger so there is no need to remember any of the following mappings.
-    Next <code>echo %s</code> echoes all currently selected files in one row, one after another and passes them to <code>tr</code> which translates all spaces between filenames to newlines. (If the filename contains spaces, we are screwed. If you have a nice solution, please send me an email). Finally each file is rotated in parallel. The point of limiting number of parallel jobs to 3 is to not block user interface in case operations are heavy and last long. Below are all the mappings I currently have. Few of them can be untested but most of them should work as is.
+    Next <code>echo %s</code> echoes all currently selected files in one row, one after another and passes them to <code>tr</code> which translates all spaces between filenames to newlines. (If the filename contains spaces, we are screwed. If you have a nice solution, please send me an email). Finally each file is rotated in parallel. The point of limiting number of parallel jobs to 3 is to not block user interface in case operations are heavy and last long. 
+    <br>
+    <br>
+    Below are all the mappings I currently have. Few of them can be untested but most of them should work as is.
     <div style=overflow:scroll;><pre><small>
         map Pi shell -p echo "     Image information         "; identify %s; file %s; echo -e "\n     Exif data     "; exiftool %s
         map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}
