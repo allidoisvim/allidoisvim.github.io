@@ -14,15 +14,52 @@
         <aside><center>Sophisticated supernerding tools for the vimmers</center></aside>
     </header>
 
+
     <h2><center>Welcome</center></h2>
-    <p>I never thought I'd be writing my own blog but here we are! The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. I currently use Manjaro Linux with i3. I work in the field of data and image analysis and therefore some things in this blog are related. I have the tendency to power use things so I assume many posts will consider how to perfrom tasks efficiently.</p>
+    <p>I never thought I'd be writing my own blog but here we are thanks to the inspiration from a friend at <a href=https://vaivatta.org/>vaivatta.org</a>. The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. I currently use Manjaro Linux with i3. I work in the field of data and image analysis and therefore some things in this blog are related. I have the tendency to power use things so I assume many posts will consider how to perform tasks efficiently.</p>
     <small>-- M, 12.06.2020</small> 
+
+
+    <h2>Ranger image processing mappings</h2>
+    <p>One of the nicest things I have come up with is to map basic image analysis operations into ranger shortcuts. 
+    For these, imagemagick does the operation and parallel is used to, surprise surprise, parallelize the job. 
+    These have sped up basic image editing tasks quite a lot and provide a super nice feeling of efficiency. Let's take an image rotation example:
+    <code>map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}</code>.
+    The first echo is meant to be a comment what this operation is about when selecting it within ranger so there is no need to remember any of the following mappings.
+    Next <code>echo %s</code> echoes all currently selected files in one row, one after another and passes them to <code>tr</code> which translates all spaces between filenames to newlines. (If the filename contains spaces, we are screwed. If you have a nice solution, please send me an email). Finally each file is rotated in parallel. The point of limiting number of parallel jobs to 3 is to not block user interface in case operations are heavy and last long. Below are all the mappings I currently have. Few of them can be untested but most of them should work as is.
+    <div style=overflow:scroll;><pre><small>
+        map Pi shell -p echo "     Image information         "; identify %s; file %s; echo -e "\n     Exif data     "; exiftool %s
+        map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}
+        map P< shell echo "        Rotate counterclockwise   "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate -90 {}
+        map Pru shell echo "       Resize up 125%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 125% Resize125_{}
+        map PrU shell echo "       Resize up 200%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 200% Resize200_{}
+        map Prd shell echo "       Resize down 75%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 75% Resize75_{}
+        map PrD shell echo "       Resize down 50%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 50% Resize50_{}
+        map Ph shell echo "        Histogram equalization    "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -equalize Histeq_{}
+        map Pf shell echo "        Flip horizontally         "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flop Hflip_{}
+        map PF shell echo "        Flip vertically           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flip Vflip_{}
+        map Pe shell echo "        Edge detection Canny      "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -canny 0 Canny_{}
+        map Pg shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luma Rec709Luma_{}
+        map PG shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luminance Rec709Luminance_{}
+        map PT shell echo "        Trim selected             "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -trim Trimmed_{}
+        map Ps shell echo "        Split vertically          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 1x2@ +repage split_v_%02d_{}
+        map PS shell echo "        Split horizontally        "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 2x1@ +repage split_h_%02d_{}
+        map Pt shell echo "        Threshold Otsu            "; echo %s | tr ' ' '\n' | parallel -j 3 otsuthresh {} Otsuthresh_{}
+        map PE shell echo "        Remove all exif data      "; echo %s | tr ' ' '\n' | parallel -j 3 remove-exif {}
+        map Pd shell echo "        Image difference          "; compare %s -compose src Diff_{}
+        map Pj shell echo "        Join vertically           "; convert -append %s Joined_v_%f
+        map PJ shell echo "        Join horizontally         "; convert +append %s Joined_h_%f
+        map Pm shell echo "        Montage selected %s       "; montage -background white -geometry +2+2 %s montage_$(echo %s | awk 'NR==1{print $1}')
+    </small></pre></div>
+    <br>
+    </p>
+    <small>-- M, 13.06.2020</small> 
+
+    <!-- <h2>i3 popup translator</h2> -->
+    <!-- <p>Content here</p> -->
 
     <!-- <h2>RSS reader</h2> -->
     <!-- <p>Content here</p> -->
-
-    <!-- <h2>Ranger image processing mappings</h2> -->
-    <!-- <p>paragraph</p> -->
 
     <!-- <h2>Turn sxiv into into image editor</h2> -->
     <!-- <p>Content here</p> -->
