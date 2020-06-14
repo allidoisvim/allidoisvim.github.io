@@ -16,7 +16,12 @@
 
 
     <h2><center>Welcome</center></h2>
-    <p>I never thought I'd be writing my own blog but here we are thanks to the inspiration from a friend at <a href=https://vaivatta.org/>vaivatta.org</a>. The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. I currently use Manjaro Linux with i3. I work in the field of data and image analysis and therefore some things in this blog are related. I have the tendency to power use things so I assume many posts will consider how to perform tasks efficiently.</p>
+    <p>I never thought I'd be writing my own blog but here we are thanks to the inspiration from a friend at <a href=https://vaivatta.org/>vaivatta.org</a>. 
+    The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. 
+    I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. 
+    My current setups is Manjaro Linux with i3 and I'm very happy with it, altought I have been thinking lately about moving to BSD and trying out things like dwm, lf file manager and wayland + sway.
+    I work in the field of data and image analysis and therefore some things in this blog are related. 
+    Apparently I have the tendency to power use a lot of things so I assume many posts will consider how to perform tasks efficiently.</p>
     <small>-- M, 12.06.2020</small> 
 
 
@@ -29,40 +34,80 @@
     Let's take an image rotation example:
     <code>map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}</code>.
     The first echo is meant to be a comment what this operation is about when selecting it within ranger so there is no need to remember any of the following mappings.
-    Next <code>echo %s</code> echoes all currently selected files in one row, one after another and passes them to <code>tr</code> which translates all spaces between filenames to newlines. (If the filename contains spaces, we are screwed. If you have a nice solution, please send me an email). Finally each file is rotated in parallel. The point of limiting number of parallel jobs to 3 is to not block user interface in case operations are heavy and last long. 
+    Next <code>echo %s</code> echoes all currently selected files in one row, one after another and passes them to <code>tr</code> which translates all spaces between filenames to newlines. 
+    (If the filename contains spaces, we are screwed. If you have a nice minimal solution, please send me an email). 
+    Finally each file is rotated in parallel.  The point of limiting number of parallel jobs to 3 is to not block user interface in case operations are heavy and last long. 
     <br>
     <br>
     Below are all the mappings I currently have. Few of them can be untested but most of them should work as is.
-    <div style=overflow:scroll;><pre><small>
-        map Pi shell -p echo "     Image information         "; identify %s; file %s; echo -e "\n     Exif data     "; exiftool %s
-        map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}
-        map P< shell echo "        Rotate counterclockwise   "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate -90 {}
-        map Pru shell echo "       Resize up 125%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 125% Resize125_{}
-        map PrU shell echo "       Resize up 200%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 200% Resize200_{}
-        map Prd shell echo "       Resize down 75%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 75% Resize75_{}
-        map PrD shell echo "       Resize down 50%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 50% Resize50_{}
-        map Ph shell echo "        Histogram equalization    "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -equalize Histeq_{}
-        map Pf shell echo "        Flip horizontally         "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flop Hflip_{}
-        map PF shell echo "        Flip vertically           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flip Vflip_{}
-        map Pe shell echo "        Edge detection Canny      "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -canny 0 Canny_{}
-        map Pg shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luma Rec709Luma_{}
-        map PG shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luminance Rec709Luminance_{}
-        map PT shell echo "        Trim selected             "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -trim Trimmed_{}
-        map Ps shell echo "        Split vertically          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 1x2@ +repage split_v_%02d_{}
-        map PS shell echo "        Split horizontally        "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 2x1@ +repage split_h_%02d_{}
-        map Pt shell echo "        Threshold Otsu            "; echo %s | tr ' ' '\n' | parallel -j 3 otsuthresh {} Otsuthresh_{}
-        map PE shell echo "        Remove all exif data      "; echo %s | tr ' ' '\n' | parallel -j 3 remove-exif {}
-        map Pd shell echo "        Image difference          "; compare %s -compose src Diff_{}
-        map Pj shell echo "        Join vertically           "; convert -append %s Joined_v_%f
-        map PJ shell echo "        Join horizontally         "; convert +append %s Joined_h_%f
-        map Pm shell echo "        Montage selected %s       "; montage -background white -geometry +2+2 %s montage_$(echo %s | awk 'NR==1{print $1}')
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    map Pi shell -p echo "     Image information         "; identify %s; file %s; echo -e "\n     Exif data     "; exiftool %s
+    map P> shell echo "        Rotate clockwise          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate 90 {}
+    map P< shell echo "        Rotate counterclockwise   "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -rotate -90 {}
+    map Pru shell echo "       Resize up 125%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 125% Resize125_{}
+    map PrU shell echo "       Resize up 200%            "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 200% Resize200_{}
+    map Prd shell echo "       Resize down 75%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 75% Resize75_{}
+    map PrD shell echo "       Resize down 50%           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -resize 50% Resize50_{}
+    map Ph shell echo "        Histogram equalization    "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -equalize Histeq_{}
+    map Pf shell echo "        Flip horizontally         "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flop Hflip_{}
+    map PF shell echo "        Flip vertically           "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -flip Vflip_{}
+    map Pe shell echo "        Edge detection Canny      "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -canny 0 Canny_{}
+    map Pg shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luma Rec709Luma_{}
+    map PG shell echo "        Grayscale                 "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -grayscale Rec709Luminance Rec709Luminance_{}
+    map PT shell echo "        Trim selected             "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -trim Trimmed_{}
+    map Ps shell echo "        Split vertically          "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 1x2@ +repage VSplit%02d_{}
+    map PS shell echo "        Split horizontally        "; echo %s | tr ' ' '\n' | parallel -j 3 convert {} -crop 2x1@ +repage HSplit%02d_{}
+    map Pt shell echo "        Threshold Otsu            "; echo %s | tr ' ' '\n' | parallel -j 3 otsuthresh {} Otsuthresh_{}
+    map PE shell echo "        Remove all exif data      "; echo %s | tr ' ' '\n' | parallel -j 3 remove-exif {}
+    map Pd shell echo "        Image difference          "; compare %s -compose src Diff_{}
+    map Pj shell echo "        Join vertically           "; convert -append %s Joined_v_%f
+    map PJ shell echo "        Join horizontally         "; convert +append %s Joined_h_%f
+    map Pm shell echo "        Montage selected %s       "; montage -background white -geometry +2+2 %s montage_$(echo %s | awk 'NR==1{print $1}')
     </small></pre></div>
+
     <br>
     </p>
     <small>-- M, 13.06.2020</small> 
 
-    <!-- <h2>i3 popup translator</h2> -->
-    <!-- <p>Content here</p> -->
+
+    <h2>Primary selection popup translator</h2>
+    <p>One super convenient tool that I have been using for couple of years now is instant translation of any selectable text in your computer. 
+    This thing was particularly useful when I was living abroad and couldn't always use browser's own translation tools. 
+    How this works is you select some text almost anywhere on your machine and press your translator shortcut and a popup window will appear with the translation of the selected text.
+    <br>
+    <br>
+    In Linux there is the traditional clipboard that you can copy into by pressing a specific keyboard shortcut. 
+    Then there is also something similar called primary selection, which is like a more short lived clipboard. 
+    It is filled with the text you select e.g. in termials and browsers woithout the need to press any shortcut! 
+    So you can create script that reads the content of current primary selection and passes that into a translation tool.
+    In my experience, the current best translation tools are still from google and these can be used via command line with the package translate-shell (Available at least on Manjaro and Ubuntu).
+    <br>
+    <br>
+    Here is the script 'translate-popup' where xclip is used to read the primary selection and trans is the command provided by translate-shell. 
+    The read command is used to wait for user input to keep the window open.
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    #!/usr/bin/env bash
+    urxvt -title translate-popup -e sh -c 'xclip -o -selection primary | trans -b -no-ansi; read'
+    </small></pre></div>
+
+    <br>
+    And here is the related i3 config:
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    for_window [title="translate-popup"] floating enable 
+    bindsym Control+section exec --no-startup-id ~/bin/translate-popup
+    </small></pre></div>
+
+    Very niice!
+    <br>
+    <small>-- M, 14.06.2020</small> 
+    </p>
+
+
+    <!-- <h2>Application specific shortcuts in i3</h2> -->
+    <!-- <p></p> -->
 
     <!-- <h2>RSS reader</h2> -->
     <!-- <p>Content here</p> -->
@@ -75,10 +120,6 @@
 
     <!-- <h2>Swap regular expressions</h2> -->
     <!-- <p>Content here</p> -->
-
-    <!-- <h2>Application specific i3 shortcuts</h2> -->
-    <!-- <p>Content here</p> -->
-
 
     <br>
     <br>
