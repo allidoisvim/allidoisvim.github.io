@@ -17,14 +17,43 @@
     </header>
 
 
-    <h2><center>Welcome</center></h2>
-    <p>I never thought I'd be writing my own blog but here we are thanks to the inspiration from a friend at <a href=https://vaivatta.org/>vaivatta.org</a>. 
-    The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. 
-    I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. 
-    My current setups is Manjaro Linux with i3 and I'm very happy with it, altought I have been thinking lately about moving to BSD and trying out things like dwm, lf file manager and wayland + sway.
-    I work in the field of data and image analysis and therefore some things in this blog are related. 
-    Apparently I have the tendency to power use a lot of things so I assume many posts will consider how to perform tasks efficiently.</p>
-    <small>-- M, 12.06.2020</small> 
+    <!-- POSTS -->
+
+
+    <h2>Primary selection popup translator</h2>
+    <p>One super convenient tool that I have been using for couple of years now is instant translation of any selectable text in your computer. 
+    This thing was particularly useful when I was living abroad and couldn't always use browser's own translation tools. 
+    How this works is you select some text almost anywhere on your machine and press your translator shortcut and a popup window will appear with the translation of the selected text.
+    <br>
+    <br>
+    In Linux there is the traditional clipboard that you can copy into by pressing a specific keyboard shortcut. 
+    Then there is also something similar called primary selection, which is like a more short lived clipboard. 
+    It is filled with the text you select e.g. in termials and browsers woithout the need to press any shortcut! 
+    So you can create script that reads the content of current primary selection and passes that into a translation tool.
+    In my experience, the current best translation tools are still from google and these can be used via command line with the package translate-shell (Available at least on Manjaro and Ubuntu).
+    <br>
+    <br>
+    Here is the script 'translate-popup' where xclip is used to read the primary selection and trans is the command provided by translate-shell. 
+    The read command is used to wait for user input to keep the window open.
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    #!/usr/bin/env bash
+    urxvt -title translate-popup -e sh -c 'xclip -o -selection primary | trans -b -no-ansi; read'
+    </small></pre></div>
+
+    <br>
+    And here is the related i3 config:
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    for_window [title="translate-popup"] floating enable 
+    bindsym Control+section exec --no-startup-id ~/bin/translate-popup
+    </small></pre></div>
+
+    Very niice!
+    <br>
+    <small>-- M, 14.06.2020</small> 
+    </p>
+
 
 
     <h2>Ranger image processing mappings</h2>
@@ -73,39 +102,16 @@
     <small>-- M, 13.06.2020</small> 
 
 
-    <h2>Primary selection popup translator</h2>
-    <p>One super convenient tool that I have been using for couple of years now is instant translation of any selectable text in your computer. 
-    This thing was particularly useful when I was living abroad and couldn't always use browser's own translation tools. 
-    How this works is you select some text almost anywhere on your machine and press your translator shortcut and a popup window will appear with the translation of the selected text.
-    <br>
-    <br>
-    In Linux there is the traditional clipboard that you can copy into by pressing a specific keyboard shortcut. 
-    Then there is also something similar called primary selection, which is like a more short lived clipboard. 
-    It is filled with the text you select e.g. in termials and browsers woithout the need to press any shortcut! 
-    So you can create script that reads the content of current primary selection and passes that into a translation tool.
-    In my experience, the current best translation tools are still from google and these can be used via command line with the package translate-shell (Available at least on Manjaro and Ubuntu).
-    <br>
-    <br>
-    Here is the script 'translate-popup' where xclip is used to read the primary selection and trans is the command provided by translate-shell. 
-    The read command is used to wait for user input to keep the window open.
 
-    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
-    #!/usr/bin/env bash
-    urxvt -title translate-popup -e sh -c 'xclip -o -selection primary | trans -b -no-ansi; read'
-    </small></pre></div>
+    <h2><center>Welcome</center></h2>
+    <p>I never thought I'd be writing my own blog but here we are thanks to the inspiration from a friend at <a href=https://vaivatta.org/>vaivatta.org</a>. 
+    The setup was pretty simple so I thought I'd write about some things I feel others might appreciate. 
+    I have been using linux as my only operating system for the past 5 years and I can safely say I'm not going back. 
+    My current setups is Manjaro Linux with i3 and I'm very happy with it, altought I have been thinking lately about moving to BSD and trying out things like dwm, lf file manager and wayland + sway.
+    I work in the field of data and image analysis and therefore some things in this blog are related. 
+    Apparently I have the tendency to power use a lot of things so I assume many posts will consider how to perform tasks efficiently.</p>
+    <small>-- M, 12.06.2020</small> 
 
-    <br>
-    And here is the related i3 config:
-
-    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
-    for_window [title="translate-popup"] floating enable 
-    bindsym Control+section exec --no-startup-id ~/bin/translate-popup
-    </small></pre></div>
-
-    Very niice!
-    <br>
-    <small>-- M, 14.06.2020</small> 
-    </p>
 
 
     <!-- <h2>Application specific shortcuts in i3</h2> -->
