@@ -92,7 +92,7 @@
         instance_name="$1"
     fi
 
-    # check if application is already running
+    # check if application is already running. If not, start it.
     if ! pgrep -x "$instance_name" > /dev/null; then
         "$@"
     else
@@ -104,7 +104,7 @@
     Google chrome's process name is different than the name of the script that starts it, which requires special handling. 
     Though I'm not using chrome anymore, I leave it in the scripts for your convenience.
     Evolution has inbuilt functionality to allow only one instance running at a time, so my script is not needed.
-    With ranger or any other file manager, I found it very handy to have it open anywhere. 
+    With ranger or any other file manager, I found it very handy to have it open anywhere instead of having it always start in specific workspace. 
 
     <br>
     <br>
