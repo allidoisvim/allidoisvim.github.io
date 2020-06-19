@@ -21,13 +21,13 @@
     <!-- POSTS -->
 
 
-    <!-- <h2><center>Application specific shortcuts in i3</center></h2> -->
-    <!-- <p></p> -->
+    <!-- <h2><center>Screenshooting heaven</center></h2> -->
+    <!-- <p>Content here</p> -->
 
     <!-- <h2><center>RSS reader</center></h2> -->
     <!-- <p>Content here</p> -->
 
-    <!-- <h2><center>Turn sxiv into into image editor</center></h2> -->
+    <!-- <h2><center>How to turn sxiv into a keyboard driven global image editor</center></h2> -->
     <!-- <p>Content here</p> -->
 
     <!-- <h2><center>Toggle all scratchpad windows at once</center></h2> -->
@@ -35,6 +35,83 @@
 
     <!-- <h2><center>Swap regular expressions</center></h2> -->
     <!-- <p>Content here</p> -->
+
+
+    <h2><center>Application specific shortcuts in i3</center></h2>
+    <p>The next idea I'm about to share is the one that had the biggest impact on how I use i3. 
+    The main idea is to have specific keyboard shortcuts for starting the most common applications. 
+    That doesn't sound like a lot, but the effects are profound. This way you can almost forget about managing workspaces yourself. 
+    Before, it was somewhat burdening to keep multiple applications open and trying to manage them manually. 
+    It's common for me to have something in all 10 workspaces and you kind of needed a system to memorize where every window belongs.
+    When using these mappings, you still need a system, but you don't need to memorize it or manage it, just write it once in your config.
+    It makes your computer so effortless and pleasant to use that using other's computers feels irritaing and inefficient. 
+    With this you can become an i3 snob who every time lets others know their workspace management is very inefficient and non-optimized: "Ugghh.. What is this s**t?!". 
+    <br>
+    <br>
+    Three things are needed to make this system work: 
+    <ol>
+        <li>Define dedicated workspaces for widows to start in.</li>
+        <li>Define keybinds that switch workspace and focus correct window.</li>
+        <li>Prevent multiple instances.</li>
+    </ol>
+    Here's the i3 config to do this. 
+
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    assign [class="Evolution"] 9
+    assign [class="TelegramDesktop"] 9
+    assign [class="Slack"] 8
+    # spotify needs special treatment
+    for_window [class="Spotify"] move to workspace 10
+
+    bindsym $mod+u exec --no-startup-id urxvt -e ranger
+    bindsym $mod+m exec --no-startup-id "allow-one-instance spotify"; workspace 10; [class="Spotify"] focus
+    bindsym $mod+i exec --no-startup-id "evolution"; workspace 9; [class="Evolution"] focus
+    # bindsym $mod+b exec --no-startup-id "allow-one-instance google-chrome-stable"; workspace 1; [class="Google-chrome"] focus
+    bindsym $mod+b exec --no-startup-id "allow-one-instance brave"; workspace 1; [class="Brave-browser"] focus
+    bindsym $mod+o exec --no-startup-id "telegram-desktop"; workspace 9; [class="TelegramDesktop"] focus
+    </small></pre></div>
+    
+    The top half of the config starts windows in their own workspaces based on the X window system's <em>class</em> propery. 
+    In the bottom half, key mappings are defined. 
+    For example, in the case of spotify, the keybind looks like this <code>bindsym $mod+m exec --no-startup-id "allow-one-instance spotify"; workspace 10; [class="Spotify"] focus</code>.
+    Spotify is started using the script 'allow-one-instance' which starts the program if its not running yet. 
+    Then switches the active workspace to 10 (otherwise windows would just start there but your active workspace could be whatever). 
+    And finally based on the class property, the specific window is made active in case there are multiple windows in the workspace when using i3's tabbed or stacked mode.
+
+    <br>
+    <br>
+    Here is the script 'allow-one-instance':
+    <div style=overflow:scroll;background-color:rgb(235,235,235);><pre><small>
+    #!/usr/bin/env bash 
+
+    # additional rules for snowflakes
+    # get name of the running instance
+    if [ "$1" == "google-chrome-stable" ]; then
+        instance_name="chrome"
+    else
+        instance_name="$1"
+    fi
+
+    # check if application is already running
+    if ! pgrep -x "$instance_name" > /dev/null; then
+        "$@"
+    else
+        echo "Instance of $1 running already"
+    fi
+    </small></pre></div>
+
+    A few notes about some details in these. 
+    Google chrome's process name is different than the name of the script that starts it, which requires special handling. 
+    Though I'm not using chrome anymore, I leave it in the scripts for your convenience.
+    Evolution has inbuilt functionality to allow only one instance running at a time, so my script is not needed.
+    With ranger or any other file manager, I found it very handy to have it open anywhere. 
+
+    <br>
+    <br>
+    You are free to use these in your own setup. If you have improved this system somehow, please let me know. Cheers!
+    <small>-- M, 19.06.2020</small>
+    </p>
+
 
 
     <h2><center>Primary selection popup translator</center></h2>
@@ -141,6 +218,6 @@
     <br>
     <br>
     <br>
-    (Picture generated by<br><a href="https://asciiart.club/">https://asciiart.club/</a>)
+    Picture generated by<br><a href="https://asciiart.club/">https://asciiart.club/</a>
 
 </body>
